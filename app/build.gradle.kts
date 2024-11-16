@@ -2,7 +2,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.chaquo.python")
 }
 
 android {
@@ -17,11 +16,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        ndk {
-            // On Apple silicon, you can omit x86_64.
-            abiFilters += listOf("arm64-v8a", "x86_64")
-        }
     }
 
     buildTypes {
@@ -45,21 +39,6 @@ android {
     }
 }
 
-chaquopy {
-    defaultConfig {
-        buildPython("/usr/bin/python")
-        version = "3.8"
-        pip {
-//            install ("/home/abhishek/Downloads/heapq.py")
-        }
-    }
-    sourceSets {
-        getByName("main") {
-            srcDir("src/main/python")
-        }
-    }
-}
-
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -79,6 +58,10 @@ dependencies {
     //MlKit Barcode Scanner
     implementation (libs.barcode.scanning)
     implementation(libs.androidx.navigation.compose)
+
+    //Splash screen API
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.espresso.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

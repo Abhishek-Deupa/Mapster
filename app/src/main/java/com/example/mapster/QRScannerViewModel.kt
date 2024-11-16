@@ -23,10 +23,10 @@ class QRScannerViewModel : ViewModel() {
         _destination.value = result
     }
 
-    private val _calculatedPath = MutableStateFlow<String?>("")
+    private val _calculatedPath = MutableStateFlow<List<List<String>>?>(null)
     val calculatedPath = _calculatedPath.asStateFlow()
 
-    fun onPathCalculation(result: String) {
+    fun onPathCalculation(result: List<List<String>>?) {
         _calculatedPath.value = result
     }
 
