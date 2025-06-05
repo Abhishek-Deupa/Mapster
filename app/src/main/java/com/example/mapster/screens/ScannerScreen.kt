@@ -3,6 +3,7 @@ package com.example.mapster.screens
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
@@ -104,6 +105,7 @@ private fun setupCamera(
                         scanner.process(inputImage)
                             .addOnSuccessListener { barcodes ->
                                 barcodes.firstOrNull()?.rawValue?.let { result ->
+                                    Log.d("QRScan", "QR Code: $result")
                                     onQRCodeScanned(result)
                                 }
                             }

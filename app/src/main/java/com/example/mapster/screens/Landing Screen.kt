@@ -2,6 +2,7 @@ package com.example.mapster.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,10 @@ import com.example.mapster.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LandingScreen(onScanClick: () -> Unit) {
+fun LandingScreen(
+    onScanClick: () -> Unit,
+    onUploadClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -68,28 +72,59 @@ fun LandingScreen(onScanClick: () -> Unit) {
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
-            Button(
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonColors(
-                    containerColor = Color.White,
-                    contentColor = Color.White,
-                    disabledContentColor = Color.White,
-                    disabledContainerColor = Color.White,
-                ),
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 48.dp, start = 16.dp, end = 16.dp),
-                onClick = { onScanClick() }) {
-                Text(
-                    text = "Scan QR Code",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold, color = Color.Black, fontFamily = FontFamily(
-                            listOf(Font(R.font.roboto_regular))
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.White,
+                        disabledContentColor = Color.White,
+                        disabledContainerColor = Color.White,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    onClick = { onScanClick() }) {
+                    Text(
+                        text = "Scan QR Code",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            fontFamily = FontFamily(
+                                listOf(Font(R.font.roboto_regular))
+                            )
                         )
                     )
-                )
+                }
+
+//                Spacer(modifier = Modifier.padding(top = 16.dp))
+
+                Button(
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.White,
+                        disabledContentColor = Color.White,
+                        disabledContainerColor = Color.White,
+                    ),
+                    onClick = { onUploadClick() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "Upload QR Image",
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            fontFamily = FontFamily(listOf(Font(R.font.roboto_regular)))
+                        )
+                    )
+                }
             }
         }
     }
-
 }
