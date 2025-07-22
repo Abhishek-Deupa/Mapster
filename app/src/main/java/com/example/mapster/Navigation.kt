@@ -11,4 +11,8 @@ sealed class Screen(val route: String) {
         fun createRoute(result: String, destination: String) =
             "result/${result}/destination/${destination}"
     }
+    data object SignUp : Screen("SignUp Page")
+    data object Login : Screen("Login Page")
+    data object StartScreen : Screen("Start Screen")
+    data object ReportScreen : Screen("Report Screen")
 }

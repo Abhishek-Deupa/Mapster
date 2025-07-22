@@ -15,8 +15,13 @@ import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.example.mapster.screens.DestinationSelectorScreen
 import com.example.mapster.screens.LandingScreen
+import com.example.mapster.screens.Login
+import com.example.mapster.screens.ReportScreen
 import com.example.mapster.screens.ResultScreen
 import com.example.mapster.screens.ScannerScreen
+import com.example.mapster.screens.SignUp
+import com.example.mapster.screens.StartScreen
+import com.google.firebase.auth.FirebaseAuth
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
 
@@ -24,8 +29,16 @@ import com.google.mlkit.vision.common.InputImage
 fun QRScannerApp() {
     val navController = rememberNavController()
     val viewModel = remember { QRScannerViewModel() }
+    val currentUser = FirebaseAuth.getInstance().currentUser
 
-    NavHost(navController = navController, startDestination = Screen.LandingPage.route) {
+    val startDestination = if (currentUser != null) {
+        Screen.LandingPage.route
+    } else {
+        Screen.StartScreen.route
+    }
+
+    NavHost(navController = navController, startDestination = startDestination) {
+
         composable(Screen.Scanner.route) {
             ScannerScreen(
                 onResultScanned = { result ->
@@ -36,6 +49,15 @@ fun QRScannerApp() {
                             launchSingleTop = true
                         })
                 }
+            )
+        }
+
+        composable(
+            route = Screen.StartScreen.route
+        ) {
+            StartScreen(
+                onRegisterClick = { navController.navigate(Screen.SignUp.route) },
+                onLoginClick = { navController.navigate(Screen.Login.route) },
             )
         }
 
@@ -71,6 +93,29 @@ fun QRScannerApp() {
         }
 
         composable(
+            route = Screen.SignUp.route,
+        ) {
+            SignUp(
+                onSignupClick = { navController.navigate(Screen.LandingPage.route) }
+            )
+        }
+
+        composable(
+            route = Screen.Login.route,
+        ) {
+            Login(
+                onLoginClick = { navController.navigate(Screen.LandingPage.route) }
+            )
+        }
+
+        composable(
+            route = Screen.ReportScreen.route
+        ) {
+            ReportScreen()
+        }
+
+
+        composable(
             route = Screen.LandingPage.route,
         ) {
             val context = LocalContext.current
@@ -97,7 +142,9 @@ fun QRScannerApp() {
                                             navController.navigate(
                                                 Screen.DestinationSelector.createRoute(result),
                                                 navOptions {
-                                                    popUpTo(Screen.DestinationSelector.route) { inclusive = true }
+                                                    popUpTo(Screen.DestinationSelector.route) {
+                                                        inclusive = true
+                                                    }
                                                     launchSingleTop = true
                                                 })
                                         }
@@ -120,13 +167,18 @@ fun QRScannerApp() {
                     }
                 }
 
-
             fun onUploadClick() {
                 launcher.launch("image/*")
             }
             LandingScreen(
                 onScanClick = { navController.navigate(Screen.Scanner.route) },
-                onUploadClick = { onUploadClick() }
+                onUploadClick = { onUploadClick() },
+                onLogoutIconClick = {
+                    navController.navigate(Screen.StartScreen.route) {
+                        popUpTo(0)
+                    }
+                },
+                onReportClick = {navController.navigate(Screen.ReportScreen.route)}
             )
         }
     }

@@ -7,9 +7,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Output
+import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,7 +38,9 @@ import com.example.mapster.R
 @Composable
 fun LandingScreen(
     onScanClick: () -> Unit,
-    onUploadClick: () -> Unit
+    onUploadClick: () -> Unit,
+    onLogoutIconClick: () -> Unit,
+    onReportClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -43,12 +50,33 @@ fun LandingScreen(
                         modifier = Modifier.fillMaxWidth(),
                         text = "MAPSTER",
                         style = TextStyle(
-                            fontSize = 24.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily(
                                 listOf(Font(R.font.poppins_semi_bold))
                             )
                         ),
                         textAlign = TextAlign.Center
                     )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onReportClick) {
+                        Icon(
+                            imageVector = Icons.Default.QuestionAnswer,
+                            contentDescription = null,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+
+                },
+                actions = {
+                    IconButton(onClick = onLogoutIconClick) {
+                        Icon(
+                            imageVector = Icons.Default.Output,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                    }
                 },
                 colors = TopAppBarColors(
                     containerColor = Color.DarkGray,
@@ -101,8 +129,6 @@ fun LandingScreen(
                         )
                     )
                 }
-
-//                Spacer(modifier = Modifier.padding(top = 16.dp))
 
                 Button(
                     shape = RoundedCornerShape(8.dp),

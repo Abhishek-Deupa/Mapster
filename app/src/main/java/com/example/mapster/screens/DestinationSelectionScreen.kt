@@ -160,15 +160,9 @@ fun DestinationSelectorScreen(
             )
             IndoorLocationSearch(viewModel)
             Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Bottom) {
-//                val context = LocalContext.current
                 Button(
                     onClick = {
                         if (viewModel.destination.value == null) {
-//                            Toast.makeText(
-//                                context,
-//                                "Please select a destination",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
                             snackBarScope.launch {
                                 snackBarHostState.showSnackbar(
                                     message = "Please select a destination",
