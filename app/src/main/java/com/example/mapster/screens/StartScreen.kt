@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,9 +26,10 @@ fun StartScreen(
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit,
 ) {
+
     Box(
         modifier = Modifier
-            .background(color = Color(red = 115, green = 33, blue = 166))
+            .background(Color.White)
             .fillMaxSize()
             .padding(bottom = 32.dp),
         contentAlignment = Alignment.Center
@@ -38,7 +38,7 @@ fun StartScreen(
             painter = painterResource(R.drawable.mapster_logo_jpg),
             contentDescription = "Mapster Logo",
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth()
                 .clip(
                     RoundedCornerShape(16.dp)
                 ),
@@ -52,19 +52,14 @@ fun StartScreen(
         ) {
             Button(
                 onClick = { onRegisterClick() },
-                colors = ButtonColors(
-                    contentColor = Color.Black,
-                    containerColor = Color.White,
-                    disabledContainerColor = Color.Gray,
-                    disabledContentColor = Color.Black
-                ),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Register", modifier = Modifier.padding(horizontal = 64.dp))
             }
             TextButton(onClick = { onLoginClick() }) {
-                Text("I already have an account", color = Color.White)
+                Text("I already have an account")
             }
         }
     }
+
 }

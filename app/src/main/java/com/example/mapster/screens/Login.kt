@@ -1,5 +1,6 @@
 package com.example.mapster.screens
 
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -40,8 +42,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.example.mapster.R
+import com.example.mapster.ui.theme.Purple40
 import com.example.mapster.ui.theme.Purple80
 import com.google.firebase.auth.FirebaseAuth
 
@@ -52,6 +56,8 @@ fun Login(onLoginClick: () -> Unit) {
     var passwordVisible by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
+
+    val auth = FirebaseAuth.getInstance()
 
     Box(
         modifier = Modifier
@@ -64,6 +70,7 @@ fun Login(onLoginClick: () -> Unit) {
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
+                .fillMaxHeight(0.15f)
                 .fillMaxWidth(0.8f)
                 .clip(shape = RoundedCornerShape(16.dp))
                 .align(Alignment.TopCenter)
@@ -71,7 +78,7 @@ fun Login(onLoginClick: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(32.dp))
+                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
                 .background(color = Color.White)
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
@@ -137,11 +144,41 @@ fun Login(onLoginClick: () -> Unit) {
                     cursorColor = Purple80
                 )
             )
+            TextButton(
+                onClick = {
+                    if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        Toast.makeText(context, "Please enter a correct email", Toast.LENGTH_SHORT).show()
+                    } else {
+                        auth.sendPasswordResetEmail(email)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Toast.makeText(
+                                        context,
+                                        "Password reset email sent to $email",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Error: ${task.exception?.localizedMessage}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                    }
+                },
+            ) {
+                Text(
+                    text = "Forgot Password?",
+                    color = Purple40,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                )
+            }
             Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.BottomCenter) {
                 Button(onClick = {
-                    val auth = FirebaseAuth.getInstance()
 
-                    auth.signInWithEmailAndPassword(email, password)
+                    auth.signInWithEmailAndPassword(email, password.trim())
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 Toast.makeText(context, "Logged In", Toast.LENGTH_SHORT).show()

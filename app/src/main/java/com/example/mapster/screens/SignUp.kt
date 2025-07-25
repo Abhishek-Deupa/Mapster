@@ -1,6 +1,7 @@
 package com.example.mapster.screens
 
 import android.content.Context
+import android.util.Log
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +48,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.mapster.R
+import com.example.mapster.ui.theme.Purple40
 import com.example.mapster.ui.theme.Purple80
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
@@ -56,7 +59,8 @@ fun createUser(
     username: String,
     email: String,
     password: String,
-    context: Context
+    context: Context,
+    onSignupClick: () -> Unit
 ) {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
@@ -69,13 +73,15 @@ fun createUser(
                     "Registration failed: ${task.exception?.localizedMessage ?: "Unknown error"}",
                     Toast.LENGTH_SHORT
                 ).show()
+                Log.d("SignUp", "got true")
                 return@addOnCompleteListener
             }
 
             val user = auth.currentUser
             val uid = user?.uid
             if (uid == null) {
-                Toast.makeText(context, "Registration failed: missing user ID.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Registration failed: missing user ID.", Toast.LENGTH_SHORT)
+                    .show()
                 return@addOnCompleteListener
             }
 
@@ -93,6 +99,7 @@ fun createUser(
             db.collection("users").document(uid)
                 .set(userMap, SetOptions.merge())
                 .addOnSuccessListener {
+                    Log.d("createUser", "createUser: Successful")
                     Toast.makeText(
                         context,
                         "You're registered successfully!",
@@ -106,6 +113,7 @@ fun createUser(
                         Toast.LENGTH_SHORT
                     ).show()
                 }
+            onSignupClick()
         }
 }
 
@@ -125,7 +133,7 @@ fun SignUp(onSignupClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(red = 115, green = 33, blue = 166))
+            .background(color = Color.White)
             .padding(top = 16.dp)
     ) {
         Image(
@@ -134,14 +142,15 @@ fun SignUp(onSignupClick: () -> Unit) {
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth(0.8f)
+                .fillMaxHeight(0.15f)
                 .clip(shape = RoundedCornerShape(16.dp))
                 .align(Alignment.TopCenter)
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(32.dp))
-                .background(color = Color.White)
+                .clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))
+                .background(color = Color(red = 115, green = 33, blue = 166))
                 .align(Alignment.BottomCenter)
                 .padding(16.dp)
                 .fillMaxHeight(0.7f)
@@ -150,7 +159,8 @@ fun SignUp(onSignupClick: () -> Unit) {
                 text = "hello!",
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = Color.White
             )
             Spacer(
                 modifier = Modifier
@@ -176,13 +186,15 @@ fun SignUp(onSignupClick: () -> Unit) {
                 colors = TextFieldDefaults.colors(
                     focusedPlaceholderColor = Color.Black,
                     unfocusedLabelColor = Color.Gray,
-                    cursorColor = Purple80
+                    cursorColor = Purple40,
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White
                 )
             )
             if (isUsernameEmpty) {
                 Text(
                     text = "This field cannot be empty",
-                    color = Color.Red,
+                    color = Color(red = 255, green = 87, blue = 51),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp)
                 )
@@ -208,13 +220,15 @@ fun SignUp(onSignupClick: () -> Unit) {
                 colors = TextFieldDefaults.colors(
                     focusedPlaceholderColor = Color.Black,
                     unfocusedLabelColor = Color.Gray,
-                    cursorColor = Purple80
+                    cursorColor = Purple40,
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White
                 )
             )
             if (!isEmailValid) {
                 Text(
                     text = "Please enter a valid email",
-                    color = Color.Red,
+                    color = Color(red = 255, green = 87, blue = 51),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp)
                 )
@@ -245,25 +259,35 @@ fun SignUp(onSignupClick: () -> Unit) {
                 colors = TextFieldDefaults.colors(
                     focusedPlaceholderColor = Color.Black,
                     unfocusedLabelColor = Color.Gray,
-                    cursorColor = Purple80
+                    cursorColor = Purple40,
+                    unfocusedContainerColor = Color.White,
+                    focusedContainerColor = Color.White
                 )
             )
             if (isPasswordEmpty) {
                 Text(
                     text = "This field cannot be empty",
-                    color = Color.Red,
+                    color = Color(red = 255, green = 87, blue = 51),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
             Box(modifier = Modifier.fillMaxHeight(), contentAlignment = Alignment.BottomCenter) {
-                Button(onClick = {
-                    if (isEmailValid && !isUsernameEmpty && !isPasswordEmpty) {
-                        createUser(username, email, password, context)
-                        onSignupClick()
-                    }
-                }, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Register")
+                Button(
+                    onClick = {
+                        if (isEmailValid && !isUsernameEmpty && !isPasswordEmpty) {
+                            createUser(username, email, password, context, onSignupClick)
+                        }
+                    }, modifier = Modifier
+                        .fillMaxWidth(),
+                    colors = ButtonColors(
+                        containerColor = Color.White,
+                        contentColor = Purple80,
+                        disabledContentColor = Color.DarkGray,
+                        disabledContainerColor = Color.LightGray
+                    )
+                ) {
+                    Text(text = "Register", color = Purple40)
                 }
             }
         }
